@@ -10,6 +10,9 @@ package src.pages
     import contents.LinkData;
     import contents.PageData;
     import contents.alert.Alert;
+    import flash.utils.setTimeout;
+    import flash.desktop.NativeApplication;
+    import flash.events.Event;
 
     public class ServerList extends MovieClip
     {
@@ -33,6 +36,8 @@ package src.pages
 
             list = Obj.get("list_mc",this);
             preloaderMC = Obj.findThisClass(SaffronPreLoader,this);
+
+            NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE,reload);
         }
 
         private function logOut():void
@@ -54,9 +59,12 @@ package src.pages
             }
         }
 
-        private function reload():void
+        private function reload(e:*=null):void
         {
+            if(super.visible==false)return;
             preloaderMC.visible = true ;
+
+            if(!DevicePrefrence.isApplicationActive)return;
 
             if(service_getServers)service_getServers.cancel();
             cashedServersList = new PageData();
@@ -93,6 +101,8 @@ package src.pages
                 }
                 cashedServersList = service_getServers.pageData(cashedServersList);
                 list.setUpOrUpdate(cashedServersList);
+
+                setTimeout(reload,5000);
             }
         }
     }
