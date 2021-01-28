@@ -13,7 +13,7 @@ package src.api.FindServers.ServersList2
 		public function ServersList2(region:String)
 		{
 			_region = region ;
-			super('https://napi.arvancloud.com/ecc/v1/regions/'+region+'/servers', data, false, false, null, true);
+			super('/ecc/v1/regions/'+region+'/servers', data, false, false, null, true);
 		}
 
 		public function pageData(basePage:PageData):PageData
