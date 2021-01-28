@@ -19,6 +19,8 @@ package
             Core.setUp(pageStatusChanged);
             super();
 
+            DevicePrefrence.setUp();
+
             RestDoaService.setUp('https://napi.arvancloud.com');
 
             StageManager.setUp(stage);
