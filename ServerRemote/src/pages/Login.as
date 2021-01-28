@@ -19,7 +19,7 @@ package src.pages
             super();
             
             field_token = Obj.get("token_mc",this);
-            field_token.setUp('توکن','',null,true);
+            field_token.setUp('توکن',Core.getKey(),null,true);
             field_token.onEnterPressed(saveMyToken);
 
             getTokenLinkMC = Obj.get("api_key",this);
@@ -27,6 +27,11 @@ package src.pages
 
             submitButton = Obj.get("button_mc",this);
             submitButton.setUp('ثبت').onClick(saveMyToken);
+        }
+
+        override public function set visible(value:Boolean):void
+        {
+            super.visible = value ;
         }
 
         private function saveMyToken():void

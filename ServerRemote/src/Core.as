@@ -1,6 +1,7 @@
 package src
 {
     import dataManager.GlobalStorage;
+    import flash.utils.setTimeout;
 
     public class Core
     {
@@ -14,6 +15,8 @@ package src
         {
             _key = GlobalStorage.load(id_key);
             _onStatusChanged = onStatusChanged ;
+
+            setTimeout(onStatusChanged,0);
         }
 
         public static function setKey(key:String):void
@@ -21,6 +24,11 @@ package src
             _key = key ;
             GlobalStorage.save(id_key,_key);
             _onStatusChanged();
+        }
+
+        public static function getKey():String
+        {
+            return _key ;
         }
 
         public static function clearKey():void

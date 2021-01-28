@@ -1,0 +1,12 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"request": "launch",
+			"preLaunchTask": "Adobe Animate: compile debug - Remote.fla",
+			"type": "swf",
+			"name": "Debug (desktop2)",
+			"program": ".\\ServerRemote\\Remote-app.xml"
+		}
+	]
+}
