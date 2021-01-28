@@ -2,6 +2,7 @@ package src
 {
     import dataManager.GlobalStorage;
     import flash.utils.setTimeout;
+    import restDoaService.RestDoaService;
 
     public class Core
     {
@@ -11,10 +12,16 @@ package src
 
         private static var _onStatusChanged:Function ;
 
+        public static const region1:String = "ir-thr-mn1";
+        public static const region2:String = "ir-thr-at1";
+        public static const region3:String = "nl-ams-su1";
+
         public static function setUp(onStatusChanged:Function):void
         {
             _key = GlobalStorage.load(id_key);
             _onStatusChanged = onStatusChanged ;
+
+            RestDoaService.addHeader("Authorization",_key);
 
             setTimeout(onStatusChanged,0);
         }
@@ -23,6 +30,12 @@ package src
         {
             _key = key ;
             GlobalStorage.save(id_key,_key);
+            
+            if(_key==null)
+                RestDoaService.removeHeader("Authorization");
+            else
+                RestDoaService.addHeader("Authorization",_key);
+
             _onStatusChanged();
         }
 

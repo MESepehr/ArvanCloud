@@ -6,6 +6,10 @@ package src.pages
     import stageManager.StageManager;
     import contents.displayElements.SaffronPreLoader;
     import src.Core;
+    import src.api.FindServers.ServersList2.ServersList2;
+    import contents.LinkData;
+    import contents.PageData;
+    import contents.alert.Alert;
 
     public class ServerList extends MovieClip
     {
@@ -14,10 +18,15 @@ package src.pages
         private var preloaderMC:SaffronPreLoader ;
 
         private var outMC:MovieClip ;
+
+        private var service_getServers:ServersList2 ;
+
+        private var cashedServersList:PageData;
         
         public function ServerList()
         {
             super();
+
 
             outMC = Obj.get("out_mc",this);
             Obj.setButton(outMC,logOut);
@@ -48,6 +57,43 @@ package src.pages
         private function reload():void
         {
             preloaderMC.visible = true ;
+
+            if(service_getServers)service_getServers.cancel();
+            cashedServersList = new PageData();
+
+            loadFirst();
+
+            function loadFirst():void
+            {
+                service_getServers = new ServersList2(Core.region1);
+                service_getServers.load().then(loadSecond).catchAndReload();
+            }
+
+            function loadSecond():void
+            {
+                cashedServersList = service_getServers.pageData(cashedServersList);
+                service_getServers = new ServersList2(Core.region2)
+                service_getServers.load().then(loadThird).catchAndReload();
+            }
+
+            function loadThird():void
+            {
+                cashedServersList = service_getServers.pageData(cashedServersList);
+                service_getServers = new ServersList2(Core.region3)
+                service_getServers.load().then(finalListLoaded).catchAndReload();
+            }
+
+            function finalListLoaded():void
+            {
+                preloaderMC.visible = false ;
+                if(service_getServers.data.message!=null)
+                {
+                    Alert.show(service_getServers.data.message);
+                    return;
+                }
+                cashedServersList = service_getServers.pageData(cashedServersList);
+                list.setUpOrUpdate(cashedServersList);
+            }
         }
     }
 }

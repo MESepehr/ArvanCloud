@@ -5,6 +5,8 @@ package
     import src.Core;
     import src.pages.Login;
     import src.pages.ServerList;
+    import restDoaService.RestDoaServiceCaller;
+    import restDoaService.RestDoaService;
 
     public class Main extends MovieClip
     {
@@ -16,6 +18,8 @@ package
         {
             Core.setUp(pageStatusChanged);
             super();
+
+            RestDoaService.setUp('https://napi.arvancloud.com');
 
             StageManager.setUp(stage);
             StageManager.add('api_key',0,1);
