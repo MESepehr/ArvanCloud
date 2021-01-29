@@ -3,3 +3,5 @@
 PostMan
 *.tmp
 ServerRemote/RECOVER_Remote.fla
+ServerRemote/exportparams
+*.log
