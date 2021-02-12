@@ -51,7 +51,7 @@ package src.pages
             if(value)
             {
                 list.height = StageManager.stageRect.height-list.y ;
-                this.y = StageManager.stageRect.y ;
+                this.y = StageManager.stageDelta.height/-2 ;
 
                 preloaderMC.y = StageManager.stageRect.height/2;
 
