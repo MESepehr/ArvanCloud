@@ -105,11 +105,11 @@ package src.pages
             data = linkData.dynamicData as ServersList2ResponddataModel ;
 
             titleMC.setUp(data.name,false);
-            osNameMC.text = data.image.os ;
+            osNameMC.text = data.image.name ;
             statusMC.text = data.status ;
             try
             {
-                ipMC.text = data.addresses.public1[0].addr ;
+                ipMC.text = data.addresses.public1[0].addr+' '+data._region ;
             }
             catch(e:Error)
             {
