@@ -97,9 +97,5 @@
   </iPhone>
   <customUpdateUI>false</customUpdateUI>
   <allowBrowserInvocation>false</allowBrowserInvocation>
-  <extensions>
-    <extensionID>com.distriqt.androidsupport.V4</extensionID>
-    <extensionID>com.distriqt.Application</extensionID>
-    <extensionID>com.distriqt.Core</extensionID>
-  </extensions>
+  
 </application>
