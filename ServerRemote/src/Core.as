@@ -23,7 +23,6 @@ package src
         public static function setUp(onStatusChanged:Function):void
         {
             _key = GlobalStorage.load(id_key);
-            Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,_key);
             _onStatusChanged = onStatusChanged ;
 
             RestDoaService.addHeader("Authorization",_key);

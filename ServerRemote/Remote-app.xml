@@ -2,7 +2,7 @@
 <application xmlns="http://ns.adobe.com/air/application/33.1">
   <id>com.sepehr.arvan</id>
   <versionNumber>1.0</versionNumber>
-  <filename>Remote</filename>
+  <filename>آروان خاموش کن</filename>
   <description/>
   <name>آروان خاموش کن</name>
   <copyright/>
@@ -13,7 +13,7 @@
     <visible>true</visible>
     <fullScreen>false</fullScreen>
     <aspectRatio>portrait</aspectRatio>
-    <renderMode>gpu</renderMode>
+    <renderMode>auto</renderMode>
     <autoOrients>true</autoOrients>
     <maximizable>true</maximizable>
     <minimizable>true</minimizable>
