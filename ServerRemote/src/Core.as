@@ -3,6 +3,9 @@ package src
     import dataManager.GlobalStorage;
     import flash.utils.setTimeout;
     import restDoaService.RestDoaService;
+    import flash.system.System;
+    import flash.desktop.Clipboard;
+    import flash.desktop.ClipboardFormats;
 
     public class Core
     {
@@ -15,10 +18,12 @@ package src
         public static const region1:String = "ir-thr-mn1";
         public static const region2:String = "ir-thr-at1";
         public static const region3:String = "nl-ams-su1";
+        public static const region4:String = "ir-thr-fr1";
 
         public static function setUp(onStatusChanged:Function):void
         {
             _key = GlobalStorage.load(id_key);
+            Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,_key);
             _onStatusChanged = onStatusChanged ;
 
             RestDoaService.addHeader("Authorization",_key);

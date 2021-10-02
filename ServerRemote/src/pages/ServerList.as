@@ -13,6 +13,8 @@ package src.pages
     import flash.utils.setTimeout;
     import flash.desktop.NativeApplication;
     import flash.events.Event;
+    import flash.utils.clearTimeout;
+    import flash.display.DisplayObject;
 
     public class ServerList extends MovieClip
     {
@@ -22,9 +24,12 @@ package src.pages
 
         private var outMC:MovieClip ;
 
-        private var service_getServers:ServersList2 ;
+        private var service_getServers1:ServersList2 ;
+        private var service_getServers2:ServersList2 ;
+        private var service_getServers3:ServersList2 ;
+        private var service_getServers4:ServersList2 ;
 
-        private var cashedServersList:PageData;
+        private var timeoutId:uint = 0 ;
         
         public function ServerList()
         {
@@ -37,7 +42,7 @@ package src.pages
             list = Obj.get("list_mc",this);
             preloaderMC = Obj.findThisClass(SaffronPreLoader,this);
 
-            NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE,reload);
+            NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE,reload,false,-100000);
         }
 
         private function logOut():void
@@ -61,48 +66,49 @@ package src.pages
 
         private function reload(e:*=null):void
         {
-            if(super.visible==false)return;
+            if(super.visible==false || !DevicePrefrence.isApplicationActive)
+            {
+                preloaderMC.visible = false ;   
+                return;
+            }
+
+            clearTimeout(timeoutId);
             preloaderMC.visible = true ;
 
-            if(!DevicePrefrence.isApplicationActive)return;
 
-            if(service_getServers)service_getServers.cancel();
-            cashedServersList = new PageData();
+            if(service_getServers1)service_getServers1.cancel();
+            if(service_getServers2)service_getServers2.cancel();
+            if(service_getServers3)service_getServers3.cancel();
+            if(service_getServers4)service_getServers4.cancel();
 
-            loadFirst();
 
-            function loadFirst():void
-            {
-                service_getServers = new ServersList2(Core.region1);
-                service_getServers.load().then(loadSecond).catchAndReload();
-            }
+                service_getServers1 = new ServersList2(Core.region1);
+                service_getServers1.load().then(finalListLoaded).catchAndReload();
 
-            function loadSecond():void
-            {
-                cashedServersList = service_getServers.pageData(cashedServersList);
-                service_getServers = new ServersList2(Core.region2)
-                service_getServers.load().then(loadThird).catchAndReload();
-            }
+                service_getServers2 = new ServersList2(Core.region2)
+                service_getServers2.load().then(finalListLoaded).catchAndReload();
 
-            function loadThird():void
-            {
-                cashedServersList = service_getServers.pageData(cashedServersList);
-                service_getServers = new ServersList2(Core.region3)
-                service_getServers.load().then(finalListLoaded).catchAndReload();
-            }
+                service_getServers3 = new ServersList2(Core.region3)
+                service_getServers3.load().then(finalListLoaded).catchAndReload();
+
+                service_getServers4 = new ServersList2(Core.region4)
+                service_getServers4.load().then(finalListLoaded).catchAndReload();
 
             function finalListLoaded():void
             {
                 preloaderMC.visible = false ;
-                if(service_getServers.data.message!=null)
-                {
-                    Alert.show(service_getServers.data.message);
-                    return;
-                }
-                cashedServersList = service_getServers.pageData(cashedServersList);
-                list.setUpOrUpdate(cashedServersList);
 
-                setTimeout(reload,5000);
+                var cashedServersList:PageData = new PageData();
+                if(service_getServers1!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers1.pageData().links1) ;
+                if(service_getServers2!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers2.pageData().links1) ;
+                if(service_getServers3!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers3.pageData().links1) ;
+                if(service_getServers4!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers4.pageData().links1) ;
+
+                if(list.pageData==null || list.pageData.links1.length<cashedServersList.links1.length)
+                    list.setUpOrUpdate(cashedServersList);
+
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(reload,5000);
             }
         }
     }

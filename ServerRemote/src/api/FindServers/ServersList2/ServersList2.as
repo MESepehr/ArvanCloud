@@ -16,9 +16,9 @@ package src.api.FindServers.ServersList2
 			super('/ecc/v1/regions/'+region+'/servers', data, false, false, null, true);
 		}
 
-		public function pageData(basePage:PageData):PageData
+		public function pageData(basePage:PageData=null):PageData
 		{
-			var page:PageData = basePage;
+			var page:PageData = basePage==null?new PageData():basePage;
 			for(var i:int= 0 ; data!=null && data.data!=null && i<data.data.length ; i++)
 			{
 				page.links1.push(data.data[i].linkData(_region))

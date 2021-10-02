@@ -23,7 +23,7 @@ package src.pages
             field_token.onEnterPressed(saveMyToken);
 
             getTokenLinkMC = Obj.get("api_key",this);
-            Obj.setButtonLink(getTokenLinkMC,"https://npanel.arvancloud.com/profile/api-keys");
+            Obj.setURLButton(getTokenLinkMC,"https://npanel.arvancloud.com/profile/api-keys");
 
             submitButton = Obj.get("button_mc",this);
             submitButton.setUp('ثبت').onClick(saveMyToken);
