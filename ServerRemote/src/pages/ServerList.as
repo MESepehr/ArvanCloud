@@ -104,7 +104,7 @@ package src.pages
                 if(service_getServers3!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers3.pageData().links1) ;
                 if(service_getServers4!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers4.pageData().links1) ;
 
-                if(list.pageData==null || list.pageData.links1.length<cashedServersList.links1.length)
+                if(list.pageData==null || list.pageData.links1.length<=cashedServersList.links1.length)
                     list.setUpOrUpdate(cashedServersList);
 
                 clearTimeout(timeoutId);
