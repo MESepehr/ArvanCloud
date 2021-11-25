@@ -16,7 +16,11 @@ package src.pages
     {
         private var titleMC:TitleText ;
 
-        private var osNameMC:TextField ;
+        private var osNameMC:TextField,
+                    hardTF:TextField,
+                    ramTF:TextField,
+                    coreTF:TextField ;
+
         private var statusMC:TextField ;
 
         private var ipMC:TextField ;
@@ -35,6 +39,10 @@ package src.pages
             this.buttonMode = false ;
             titleMC = Obj.get("title_mc",this);
             osNameMC = Obj.get("os_mc",this);
+            hardTF = Obj.get("hard_mc",this);
+            ramTF = Obj.get("ram_mc",this);
+            coreTF = Obj.get("core_mc",this);
+
             ipMC = Obj.get("ip_mc",this);
             statusMC = Obj.get("stat_mc",this);
 
@@ -106,6 +114,9 @@ package src.pages
 
             titleMC.setUp(data.name,false);
             osNameMC.text = data.image.name ;
+            hardTF.text = data.flavor.disk+' GB Hard';
+            ramTF.text = data.flavor.ram+' MB Ram';
+            coreTF.text = data.flavor.vcpus+' Core CPU';
             statusMC.text = data.status ;
             try
             {

@@ -2,18 +2,18 @@
 	"files": [
 		".\\ServerRemote\\Main.as"
 	],
+	"config": "airmobile",
+	"animateOptions": {
+		"file": ".\\ServerRemote\\Remote.fla"
+	},
 	"compilerOptions": {
+		"external-library-path": [],
 		"source-path": [
 			"D:\\Job\\Git\\ASPack\\ASPack",
 			"D:\\Job\\Git\\SaffronCode\\SaffronCode",
 			"C:\\Tools\\ASPack",
 			"C:\\Tools\\SaffronCode"
-		],
-		"external-library-path": []
-	},
-	"config": "airmobile",
-	"animateOptions": {
-		"file": ".\\ServerRemote\\Remote.fla"
+		]
 	},
 	"type": "app"
 }
