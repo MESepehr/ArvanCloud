@@ -6,12 +6,19 @@ package src
     import flash.system.System;
     import flash.desktop.Clipboard;
     import flash.desktop.ClipboardFormats;
+    import diagrams.calender.MyShamsi;
+    import contents.PageData;
+    import contents.LinkData;
 
     public class Core
     {
-        private static var _key:String ;
+        private static var selectet_token_index:int = -1 ;
+        private static var allTokens:Vector.<TokenData> ;
 
         private static const id_key:String = "id_key";
+
+        private static const id_keys:String = "id_keys",
+                            id_selectedKeyIndex:String = id_selectedKeyIndex;
 
         private static var _onStatusChanged:Function ;
 
@@ -24,40 +31,115 @@ package src
 
         public static function setUp(onStatusChanged:Function):void
         {
-            _key = GlobalStorage.load(id_key);
+            var _key:String = GlobalStorage.load(id_key);
             _onStatusChanged = onStatusChanged ;
+
+            allTokens = GlobalStorage.loadObject(id_keys,new Vector.<TokenData>());
+            if(allTokens==null)
+            {
+                allTokens = new Vector.<TokenData>();
+                if(_key!=null)
+                {
+                    setToken('untitled',_key);
+                }
+            }
+            var loadedIndex:* = GlobalStorage.load(id_selectedKeyIndex);
+            if(loadedIndex!=null)
+            {
+                selectet_token_index = loadedIndex ;
+            }
 
             RestDoaService.addHeader("Authorization",_key);
 
             setTimeout(onStatusChanged,0);
         }
 
-        public static function setKey(key:String):void
+        private static function setToken(title:String,token:String):void
         {
-            _key = key ;
-            GlobalStorage.save(id_key,_key);
-            
-            if(_key==null)
+            for(var i:int = 0 ; i<allTokens.length ; i++)
+            {
+                if(allTokens[i].token == token)
+                {
+                    selectet_token_index = i ;
+                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index);
+                    return;
+                }
+            }
+            var currentToken:TokenData = new TokenData();
+            currentToken.title = title ;
+            currentToken.token = token ;
+            allTokens.unshift(currentToken);
+            selectet_token_index = 0 ;
+            GlobalStorage.saveObject(id_keys,allTokens);
+        }
+
+        public static function removeToken(tok:TokenData):void
+        {  
+            for(var i:int = 0 ; i<allTokens.length ; i++)
+            {
+                if(allTokens[i].token == tok.token)
+                {
+                    allTokens.removeAt(i);
+                    selectet_token_index = -1 ;
+                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index);
+                    GlobalStorage.saveObject(id_keys,allTokens);
+                    return;
+                }
+            }
+        }
+
+        public static function setKey(key:String,title:String=null):void
+        {
+            if(key==null)
+            {
+                selectet_token_index = -1 ;
                 RestDoaService.removeHeader("Authorization");
+            }
             else
-                RestDoaService.addHeader("Authorization",_key);
+            {
+                if(title==null)title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
+                setToken(title,key)
+                RestDoaService.addHeader("Authorization",key);
+            }
 
             _onStatusChanged();
         }
 
-        public static function getKey():String
+        public static function allTokenPageData():PageData
         {
-            return _key ;
+            var page:PageData = new PageData();
+
+            for(var i:int = 0 ; i<allTokens.length ; i++)
+            {
+                page.links1.push(new LinkData().createLinkFor(null,allTokens[i]));
+            }
+
+            return page ;
+        }
+
+        public static function getTokenObject():TokenData
+        {
+            if(allTokens!=null && allTokens.length<selectet_token_index)
+            {
+                return allTokens[selectet_token_index];
+            }
+            return null ;
+        }
+
+        private static function getKey():String
+        {
+            return getTokenObject().token ;
+            //It will throw error
         }
 
         public static function clearKey():void
         {
-            setKey(null)
+            setKey(null);
         }
 
         public static function haveKey():Boolean
         {
-            return _key!=null ;
+            return selectet_token_index!=-1 ;
         }
     }
 }

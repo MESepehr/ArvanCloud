@@ -5,10 +5,15 @@ package src.pages
     import popForm.PopField;
     import popForm.PopButton;
     import src.Core;
+    import contents.displayPages.DynamicLinks;
+    import contents.LinkData;
+    import src.TokenData;
 
     public class Login extends MovieClip
     {
-        private var field_token:PopField ;
+        private var field_token:PopField, field_title:PopField ;
+
+        private var otherTockens:DynamicLinks ;
 
         private var getTokenLinkMC:MovieClip ;
 
@@ -18,15 +23,33 @@ package src.pages
         {
             super();
             
+            field_title = Obj.get("title_mc",this);
             field_token = Obj.get("token_mc",this);
-            field_token.setUp('توکن',Core.getKey(),null,true);
+
+            
+            field_title.setUp('عنوان','',null,true);
+            field_token.setUp('توکن','',null,true);
+
             field_token.onEnterPressed(saveMyToken);
+
+            otherTockens = Obj.get('tockens_mc',this);
+            otherTockens.changeDeltaXY(0,0);
+            otherTockens.setUp(Core.allTokenPageData());
+            if(otherTockens.pageData.links1.length == 0)
+                otherTockens.visible = false ;
+            otherTockens.onItemSelected(tokenSelected);
 
             getTokenLinkMC = Obj.get("api_key",this);
             Obj.setURLButton(getTokenLinkMC,"https://npanel.arvancloud.com/profile/api-keys");
 
             submitButton = Obj.get("button_mc",this);
             submitButton.setUp('ثبت').onClick(saveMyToken);
+        }
+
+        private function tokenSelected(linkdata:LinkData):void
+        {
+            var tok:TokenData = linkdata.dynamicData as TokenData;
+            Core.setKey(tok.token,tok.title);
         }
 
         override public function set visible(value:Boolean):void
@@ -43,6 +66,7 @@ package src.pages
                 return ;
             }
             Core.setKey(field_token.text);
+            otherTockens.setUp(Core.allTokenPageData());
         }
     }
 }
