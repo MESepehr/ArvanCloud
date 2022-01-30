@@ -23,14 +23,9 @@ package src
 
         private static var _onStatusChanged:Function ;
 
-        private static const region1:String = "ir-thr-mn1";
-        // private static const region2:String = "ir-thr-at1";
-        // private static const region3:String = "nl-ams-su1";
-        // private static const region4:String = "ir-thr-fr1";
-
         private static var service_regions:Regions;
 
-        public static var regions:Array = [region1];
+        public static var regions:Array = [];
 
         public static function setUp(onStatusChanged:Function):void
         {
@@ -72,6 +67,7 @@ package src
                     if(service_regions.data.data[i].soon!=true)
                         regions.push(service_regions.data.data[i].code);
                 }
+                _onStatusChanged();
             }
 
         private static function setToken(title:String,token:String):void
@@ -114,16 +110,16 @@ package src
             {
                 selectet_token_index = -1 ;
                 RestDoaService.removeHeader("Authorization");
+                _onStatusChanged();
             }
             else
             {
                 if(title==null)title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
                 setToken(title,key)
                 RestDoaService.addHeader("Authorization",key);
-                loadRegions();
+                loadRegions();//This function will call onStatusChange function at final phase
             }
 
-            _onStatusChanged();
         }
 
         public static function allTokenPageData():PageData

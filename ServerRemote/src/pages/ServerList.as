@@ -12,6 +12,9 @@ package src.pages
     import flash.desktop.NativeApplication;
     import flash.events.Event;
     import flash.utils.clearTimeout;
+    import appManager.displayContentElemets.TitleText;
+    import src.api.Finance.Finance;
+    import com.mteamapp.StringFunctions;
 
     public class ServerList extends MovieClip
     {
@@ -21,9 +24,14 @@ package src.pages
 
         private var outMC:MovieClip ;
 
+        private var walletTXT:TitleText,
+                    invoiceTXT:TitleText;
+
         private var services:Vector.<ServersList2> = new Vector.<ServersList2>();
 
         private var timeoutId:uint = 0 ;
+
+        private var service_finance:Finance ;
         
         public function ServerList()
         {
@@ -32,6 +40,9 @@ package src.pages
 
             outMC = Obj.get("out_mc",this);
             Obj.setButton(outMC,logOut);
+
+            walletTXT = Obj.get("wallet_txt",this);
+            invoiceTXT = Obj.get("invoice_txt",this);
 
             list = Obj.get("list_mc",this);
             preloaderMC = Obj.findThisClass(SaffronPreLoader,this);
@@ -59,6 +70,12 @@ package src.pages
             }
         }
 
+        private function showFinanceDetail():void
+        {
+            walletTXT.setUp(StringFunctions.currancyPrint(Math.round(service_finance.data.data.totalBalance/10)),false);
+            invoiceTXT.setUp(StringFunctions.currancyPrint(Math.round(service_finance.data.data.currentInvoicePrice/10)),false);
+        }
+
         private function reload(e:*=null):void
         {
             if(super.visible==false || !DevicePrefrence.isApplicationActive)
@@ -66,6 +83,9 @@ package src.pages
                 preloaderMC.visible = false ;   
                 return;
             }
+
+            service_finance = new Finance();
+            service_finance.load().onConnected(showFinanceDetail)
 
             clearTimeout(timeoutId);
             preloaderMC.visible = true ;
