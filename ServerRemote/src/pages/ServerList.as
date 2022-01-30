@@ -7,14 +7,11 @@ package src.pages
     import contents.displayElements.SaffronPreLoader;
     import src.Core;
     import src.api.FindServers.ServersList2.ServersList2;
-    import contents.LinkData;
     import contents.PageData;
-    import contents.alert.Alert;
     import flash.utils.setTimeout;
     import flash.desktop.NativeApplication;
     import flash.events.Event;
     import flash.utils.clearTimeout;
-    import flash.display.DisplayObject;
 
     public class ServerList extends MovieClip
     {
@@ -24,10 +21,7 @@ package src.pages
 
         private var outMC:MovieClip ;
 
-        private var service_getServers1:ServersList2 ;
-        private var service_getServers2:ServersList2 ;
-        private var service_getServers3:ServersList2 ;
-        private var service_getServers4:ServersList2 ;
+        private var services:Vector.<ServersList2> = new Vector.<ServersList2>();
 
         private var timeoutId:uint = 0 ;
         
@@ -75,34 +69,30 @@ package src.pages
             clearTimeout(timeoutId);
             preloaderMC.visible = true ;
 
+            for(var i:int = 0 ; i<Core.regions.length ; i++)
+            {
+                if(services.length>i && services[i])
+                {
+                    services[i].cancel();
+                }
+                else
+                {
+                    services[i] = new ServersList2(Core.regions[i]);
+                }
+                services[i].load().then(finalListLoaded).catchAndReload();
+            }
 
-            if(service_getServers1)service_getServers1.cancel();
-            if(service_getServers2)service_getServers2.cancel();
-            if(service_getServers3)service_getServers3.cancel();
-            if(service_getServers4)service_getServers4.cancel();
-
-
-                service_getServers1 = new ServersList2(Core.region1);
-                service_getServers1.load().then(finalListLoaded).catchAndReload();
-
-                service_getServers2 = new ServersList2(Core.region2)
-                service_getServers2.load().then(finalListLoaded).catchAndReload();
-
-                service_getServers3 = new ServersList2(Core.region3)
-                service_getServers3.load().then(finalListLoaded).catchAndReload();
-
-                service_getServers4 = new ServersList2(Core.region4)
-                service_getServers4.load().then(finalListLoaded).catchAndReload();
 
             function finalListLoaded():void
             {
                 preloaderMC.visible = false ;
 
                 var cashedServersList:PageData = new PageData();
-                if(service_getServers1!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers1.pageData().links1) ;
-                if(service_getServers2!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers2.pageData().links1) ;
-                if(service_getServers3!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers3.pageData().links1) ;
-                if(service_getServers4!=null)cashedServersList.links1 = cashedServersList.links1.concat(service_getServers4.pageData().links1) ;
+
+                for(var i:int = 0 ; i<services.length ; i++)
+                {
+                    if(services[i]!=null)cashedServersList.links1 = cashedServersList.links1.concat(services[i].pageData().links1) ;
+                }
 
                 if(list.pageData==null || list.pageData.links1.length<=cashedServersList.links1.length)
                     list.setUpOrUpdate(cashedServersList);

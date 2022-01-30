@@ -15,10 +15,12 @@ package src
 
         private static var _onStatusChanged:Function ;
 
-        public static const region1:String = "ir-thr-mn1";
-        public static const region2:String = "ir-thr-at1";
-        public static const region3:String = "nl-ams-su1";
-        public static const region4:String = "ir-thr-fr1";
+        private static const region1:String = "ir-thr-mn1";
+        private static const region2:String = "ir-thr-at1";
+        private static const region3:String = "nl-ams-su1";
+        private static const region4:String = "ir-thr-fr1";
+
+        public static var regions:Array = [region1,region2,region3,region4];
 
         public static function setUp(onStatusChanged:Function):void
         {
