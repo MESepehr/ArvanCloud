@@ -9,6 +9,7 @@ package src
     import diagrams.calender.MyShamsi;
     import contents.PageData;
     import contents.LinkData;
+    import src.api.regions.Regions;
 
     public class Core
     {
@@ -23,11 +24,13 @@ package src
         private static var _onStatusChanged:Function ;
 
         private static const region1:String = "ir-thr-mn1";
-        private static const region2:String = "ir-thr-at1";
-        private static const region3:String = "nl-ams-su1";
-        private static const region4:String = "ir-thr-fr1";
+        // private static const region2:String = "ir-thr-at1";
+        // private static const region3:String = "nl-ams-su1";
+        // private static const region4:String = "ir-thr-fr1";
 
-        public static var regions:Array = [region1,region2,region3,region4];
+        private static var service_regions:Regions;
+
+        public static var regions:Array = [region1];
 
         public static function setUp(onStatusChanged:Function):void
         {
@@ -50,9 +53,26 @@ package src
             }
 
             RestDoaService.addHeader("Authorization",_key);
+            if(_key!=null)setTimeout(loadRegions,0);
 
             setTimeout(onStatusChanged,0);
         }
+
+        private static function loadRegions():void
+        {
+            service_regions = new Regions();
+            service_regions.load().onConnected(setRegions);
+        }
+
+            private static function setRegions():void
+            {
+                regions = [];
+                for(var i:int = 0 ; i<service_regions.data.data.length ; i++)
+                {
+                    if(service_regions.data.data[i].soon!=true)
+                        regions.push(service_regions.data.data[i].code);
+                }
+            }
 
         private static function setToken(title:String,token:String):void
         {
@@ -100,6 +120,7 @@ package src
                 if(title==null)title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
                 setToken(title,key)
                 RestDoaService.addHeader("Authorization",key);
+                loadRegions();
             }
 
             _onStatusChanged();
