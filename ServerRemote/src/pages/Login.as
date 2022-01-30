@@ -35,8 +35,6 @@ package src.pages
             otherTockens = Obj.get('tockens_mc',this);
             otherTockens.changeDeltaXY(0,0);
             otherTockens.setUp(Core.allTokenPageData());
-            if(otherTockens.pageData.links1.length == 0)
-                otherTockens.visible = false ;
             otherTockens.onItemSelected(tokenSelected);
 
             getTokenLinkMC = Obj.get("api_key",this);

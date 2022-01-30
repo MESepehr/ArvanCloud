@@ -53,6 +53,7 @@ package src.pages
                 this.y = StageManager.stageDelta.height/-2 ;
 
                 preloaderMC.y = StageManager.stageRect.height/2;
+                list.setUp(new PageData());
 
                 reload();
             }
