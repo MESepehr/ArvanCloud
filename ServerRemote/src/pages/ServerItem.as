@@ -113,7 +113,7 @@ package src.pages
             data = linkData.dynamicData as ServersList2ResponddataModel ;
 
             titleMC.setUp(data.name,false);
-            osNameMC.text = data.image.name ;
+            osNameMC.text = data.name ;
             hardTF.text = data.flavor.disk+' GB Hard';
             ramTF.text = data.flavor.ram+' MB Ram';
             coreTF.text = data.flavor.vcpus+' Core CPU';
@@ -124,7 +124,14 @@ package src.pages
             }
             catch(e:Error)
             {
-                ipMC.text = '' ;
+                try
+                {
+                    ipMC.text = data.addresses.public210[0].addr+' '+data._region ;
+                }
+                catch(e:Error)
+                {
+                    ipMC.text = '' ;
+                };
             };
 
             updateButtonInterface();
