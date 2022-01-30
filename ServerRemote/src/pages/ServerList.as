@@ -75,10 +75,7 @@ package src.pages
                 {
                     services[i].cancel();
                 }
-                else
-                {
-                    services[i] = new ServersList2(Core.regions[i]);
-                }
+                services[i] = new ServersList2(Core.regions[i]);
                 services[i].load().then(finalListLoaded).catchAndReload();
             }
 
