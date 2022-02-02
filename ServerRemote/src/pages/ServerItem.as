@@ -11,6 +11,7 @@ package src.pages
     import src.api.powerOn.PowerOn;
     import contents.alert.Alert;
     import src.api.powerOff.PowerOff;
+    import src.api.Report.Report;
 
     public class ServerItem extends LinkItem
     {
@@ -19,7 +20,9 @@ package src.pages
         private var osNameMC:TextField,
                     hardTF:TextField,
                     ramTF:TextField,
-                    coreTF:TextField ;
+                    ramPrecent:Precenter,
+                    coreTF:TextField,
+                    corePrecent:Precenter ;
 
         private var statusMC:TextField ;
 
@@ -33,6 +36,8 @@ package src.pages
         private var service_poserOn:PowerOn ;
         private var service_poserff:PowerOff ;
 
+        private var service_report:Report ;
+
         public function ServerItem()
         {
             super(true,false);
@@ -41,7 +46,19 @@ package src.pages
             osNameMC = Obj.get("os_mc",this);
             hardTF = Obj.get("hard_mc",this);
             ramTF = Obj.get("ram_mc",this);
+                ramPrecent = new Precenter(ramTF.width,ramTF.height);
+                ramPrecent.x = ramTF.x;
+                ramPrecent.y = ramTF.y;
+                this.addChild(ramPrecent);
+                this.swapChildren(ramPrecent,ramTF);
+                //ramPrecent.setUp(0.4);
             coreTF = Obj.get("core_mc",this);
+                corePrecent = new Precenter(coreTF.width,coreTF.height);
+                corePrecent.x = coreTF.x;
+                corePrecent.y = coreTF.y;
+                this.addChild(corePrecent);
+                this.swapChildren(corePrecent,coreTF);
+                //corePrecent.setUp(0.4);
 
             ipMC = Obj.get("ip_mc",this);
             statusMC = Obj.get("stat_mc",this);
@@ -108,8 +125,39 @@ package src.pages
             updateButtonInterface();
         }
 
+        private function updatePrecent():void
+        {
+            if(service_report.data.data.charts.ram!=null)
+            {
+                trace("Used:"+(service_report.data.data.charts.ram.series[0].data[
+                    service_report.data.data.charts.ram.series[0].data.length-1
+                ]));
+                trace("total:"+data.flavor.ram);
+                ramPrecent.setUp(service_report.data.data.charts.ram.series[0].data[
+                    service_report.data.data.charts.ram.series[0].data.length-1
+                ]/(data.flavor.ram*1000*1000));
+            }
+            if(service_report.data.data.charts.cpu!=null)
+            {
+                trace("Used:"+(service_report.data.data.charts.cpu.series[0].data[
+                    service_report.data.data.charts.cpu.series[0].data.length-1
+                ]));
+                corePrecent.setUp(service_report.data.data.charts.cpu.series[0].data[
+                    service_report.data.data.charts.cpu.series[0].data.length-1
+                ]);
+            }
+        }
+
         override public function setUp(linkData:LinkData):void
         {
+            var newData:ServersList2ResponddataModel = linkData.dynamicData as ServersList2ResponddataModel ;
+
+            if(data==null || (data.name != newData.name))
+            {
+                if(service_report)service_report.cancel();
+                service_report = new Report(newData._region,newData.id);
+            }
+
             data = linkData.dynamicData as ServersList2ResponddataModel ;
 
             titleMC.setUp(data.name,false);
@@ -148,6 +196,10 @@ package src.pages
             {
                 Obj.button_disable(onMC);
                 Obj.button_enable(offMC);
+
+                //service_report.changeOfflineDate(new Date(new Date().time-10*1000));
+                if(!service_report.isLoading)
+                    service_report.load().onConnected(updatePrecent);
             }
             else
             {
