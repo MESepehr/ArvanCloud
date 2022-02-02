@@ -31,6 +31,12 @@ package src
         {
             var _key:String = GlobalStorage.load(id_key);
             _onStatusChanged = onStatusChanged ;
+            
+            var loadedIndex:* = GlobalStorage.load(id_selectedKeyIndex);
+            if(loadedIndex!=null)
+            {
+                selectet_token_index = loadedIndex ;
+            }
 
             allTokens = GlobalStorage.loadObject(id_keys,new Vector.<TokenData>());
             if(allTokens==null)
@@ -41,14 +47,13 @@ package src
                     setToken('untitled',_key);
                 }
             }
-            var loadedIndex:* = GlobalStorage.load(id_selectedKeyIndex);
-            if(loadedIndex!=null)
-            {
-                selectet_token_index = loadedIndex ;
-            }
+            GlobalStorage.save(id_key,null);
 
-            RestDoaService.addHeader("Authorization",_key);
-            if(_key!=null)setTimeout(loadRegions,0);
+            if(getKey()!=null)
+            {
+                RestDoaService.addHeader("Authorization",getKey());
+                setTimeout(loadRegions,0);
+            }
 
             setTimeout(onStatusChanged,0);
         }
@@ -136,7 +141,7 @@ package src
 
         public static function getTokenObject():TokenData
         {
-            if(allTokens!=null && allTokens.length<selectet_token_index)
+            if(allTokens!=null && allTokens.length>selectet_token_index)
             {
                 return allTokens[selectet_token_index];
             }
@@ -145,8 +150,10 @@ package src
 
         private static function getKey():String
         {
-            return getTokenObject().token ;
-            //It will throw error
+            var tokObject:TokenData = getTokenObject();
+            if(tokObject!=null)
+                return tokObject.token ;
+            return null;
         }
 
         public static function clearKey():void
