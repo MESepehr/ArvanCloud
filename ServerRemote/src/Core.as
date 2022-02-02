@@ -10,6 +10,7 @@ package src
     import contents.PageData;
     import contents.LinkData;
     import src.api.regions.Regions;
+    import com.mteamapp.StringFunctions;
 
     public class Core
     {
@@ -81,8 +82,10 @@ package src
             {
                 if(allTokens[i].token == token)
                 {
+                    allTokens[i].title = title ;
                     selectet_token_index = i ;
-                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index);
+                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index,false);
+                    GlobalStorage.saveObject(id_keys,allTokens);
                     return;
                 }
             }
@@ -119,7 +122,7 @@ package src
             }
             else
             {
-                if(title==null)title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
+                if(StringFunctions.isNullOrEmpty(title))title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
                 setToken(title,key)
                 RestDoaService.addHeader("Authorization",key);
                 loadRegions();//This function will call onStatusChange function at final phase

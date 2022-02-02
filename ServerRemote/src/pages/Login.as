@@ -19,15 +19,18 @@ package src.pages
 
         private var submitButton:PopButton ;
 
+        private static var me:Login;
+
         public function Login()
         {
             super();
+            me = this ;
             
             field_title = Obj.get("title_mc",this);
             field_token = Obj.get("token_mc",this);
 
             
-            field_title.setUp('عنوان','',null,true);
+            field_title.setUp('عنوان','',null);
             field_token.setUp('توکن','',null,true);
 
             field_token.onEnterPressed(saveMyToken);
@@ -42,6 +45,12 @@ package src.pages
 
             submitButton = Obj.get("button_mc",this);
             submitButton.setUp('ثبت').onClick(saveMyToken);
+        }
+
+        public static function edit(title:String,token:String):void
+        {
+            me.field_title.text = title;
+            me.field_token.text = token ;
         }
 
         private function tokenSelected(linkdata:LinkData):void
@@ -63,7 +72,7 @@ package src.pages
                 field_token.changeColor(2);
                 return ;
             }
-            Core.setKey(field_token.text);
+            Core.setKey(field_token.text,field_title.text);
             otherTockens.setUp(Core.allTokenPageData());
         }
     }
