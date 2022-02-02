@@ -7,6 +7,7 @@ package
     import src.pages.ServerList;
     import restDoaService.RestDoaServiceCaller;
     import restDoaService.RestDoaService;
+    import src.pages.VersionChecker;
 
     public class Main extends MovieClip
     {
@@ -25,6 +26,7 @@ package
 
             StageManager.setUp(stage);
             StageManager.add('api_key',0,1);
+            StageManager.add('footer_mc',0,1);
 
             loginPage = Obj.findThisClass(Login,this);
             serverList = Obj.findThisClass(ServerList,this);

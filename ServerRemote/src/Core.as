@@ -10,6 +10,7 @@ package src
     import contents.PageData;
     import contents.LinkData;
     import src.api.regions.Regions;
+    import com.mteamapp.StringFunctions;
 
     public class Core
     {
@@ -31,6 +32,12 @@ package src
         {
             var _key:String = GlobalStorage.load(id_key);
             _onStatusChanged = onStatusChanged ;
+            
+            var loadedIndex:* = GlobalStorage.load(id_selectedKeyIndex);
+            if(loadedIndex!=null)
+            {
+                selectet_token_index = loadedIndex ;
+            }
 
             allTokens = GlobalStorage.loadObject(id_keys,new Vector.<TokenData>());
             if(allTokens==null)
@@ -41,14 +48,13 @@ package src
                     setToken('untitled',_key);
                 }
             }
-            var loadedIndex:* = GlobalStorage.load(id_selectedKeyIndex);
-            if(loadedIndex!=null)
-            {
-                selectet_token_index = loadedIndex ;
-            }
+            GlobalStorage.save(id_key,null);
 
-            RestDoaService.addHeader("Authorization",_key);
-            if(_key!=null)setTimeout(loadRegions,0);
+            if(getKey()!=null)
+            {
+                RestDoaService.addHeader("Authorization",getKey());
+                setTimeout(loadRegions,0);
+            }
 
             setTimeout(onStatusChanged,0);
         }
@@ -76,8 +82,10 @@ package src
             {
                 if(allTokens[i].token == token)
                 {
+                    allTokens[i].title = title ;
                     selectet_token_index = i ;
-                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index);
+                    GlobalStorage.save(id_selectedKeyIndex,selectet_token_index,false);
+                    GlobalStorage.saveObject(id_keys,allTokens);
                     return;
                 }
             }
@@ -114,7 +122,7 @@ package src
             }
             else
             {
-                if(title==null)title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
+                if(StringFunctions.isNullOrEmpty(title))title = MyShamsi.miladiToShamsi(new Date()).showStringFormat(true,false);
                 setToken(title,key)
                 RestDoaService.addHeader("Authorization",key);
                 loadRegions();//This function will call onStatusChange function at final phase
@@ -136,7 +144,7 @@ package src
 
         public static function getTokenObject():TokenData
         {
-            if(allTokens!=null && allTokens.length<selectet_token_index)
+            if(allTokens!=null && allTokens.length>selectet_token_index)
             {
                 return allTokens[selectet_token_index];
             }
@@ -145,8 +153,10 @@ package src
 
         private static function getKey():String
         {
-            return getTokenObject().token ;
-            //It will throw error
+            var tokObject:TokenData = getTokenObject();
+            if(tokObject!=null)
+                return tokObject.token ;
+            return null;
         }
 
         public static function clearKey():void
