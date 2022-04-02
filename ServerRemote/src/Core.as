@@ -144,7 +144,7 @@ package src
 
         public static function getTokenObject():TokenData
         {
-            if(allTokens!=null && allTokens.length>selectet_token_index)
+            if(allTokens!=null && allTokens.length>selectet_token_index && selectet_token_index>=0)
             {
                 return allTokens[selectet_token_index];
             }
