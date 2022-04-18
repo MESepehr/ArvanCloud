@@ -216,10 +216,10 @@ package src.pages
             {
                 trace("Used:"+(service_report.data.data.charts.cpu.series[0].data[
                     service_report.data.data.charts.cpu.series[0].data.length-1
-                ]));
+                ]/data.flavor.vcpus));
                 corePrecent.setUp(service_report.data.data.charts.cpu.series[0].data[
                     service_report.data.data.charts.cpu.series[0].data.length-1
-                ]);
+                ]/data.flavor.vcpus);
             }
         }
 

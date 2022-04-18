@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <application xmlns="http://ns.adobe.com/air/application/33.1">
   <id>com.sepehr.arvan</id>
-  <versionNumber>1.7.1</versionNumber>
+  <versionNumber>1.7.2</versionNumber>
   <filename>Remote</filename>
   <description/>
   <name>آروان خاموش کن</name>
